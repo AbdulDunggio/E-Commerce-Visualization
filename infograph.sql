@@ -21,7 +21,7 @@ group by product_category_name
 order by total desc
 
 --Pie Chart for payment type
---Using orders table
+--Using payments table
 
 --Shipping performance
 -- Bar Chart avg shipping by region
@@ -34,7 +34,7 @@ on c.customer_id = o.customer_id
 group BY customer_city
 order by avg_shipping 
 
---Bar Chart/Map Total Orders by region
+-- Bar Chart/Map Total Orders by region
 select
 customer_city,
 count(o.order_id) as total_orders
@@ -43,3 +43,38 @@ join orders o
 on c.customer_id = o.customer_id
 group by customer_city
 order by total_orders desc
+
+-- Scatter Plot price vs shipping charges
+select
+product_category_name,
+product_weight_g,
+oi.price,
+oi.shipping_charges
+from products p
+join order_items oi
+on p.product_id = oi.product_id
+
+-- Customer Behavior
+-- Bar Chart total customers by region
+select
+customer_city,
+count(distinct c.customer_id) as t_customer
+from customers c
+join orders o
+on c.customer_id = o.customer_id
+where o.order_status = 'delivered'
+group by customer_city
+order by t_customer desc
+
+-- Order Status
+-- Donut chart order_status
+-- Using orders table
+
+-- Canceled trends by month
+select
+quarter(order_purchase_timestamp) as quarter,
+year(order_purchase_timestamp) as year,
+monthname(order_purchase_timestamp) as month,
+order_status
+from orders
+where order_status = 'canceled'
